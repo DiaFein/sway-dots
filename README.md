@@ -13,4 +13,14 @@ My Sway Dotfiles
 | --------            | ----------- |
 |  OS                 | Debian      |
 |  WM                 | Sway        |
-|  Autotiling Script  | [Autotiling](insterlinklater) | 
+|  Autotiling Script  | [Autotiling](https://github.com/nwg-piotr/autotiling) | 
+|  Bar                | Waybar      |
+|  Terminal           | Foot        |
+|  Shell              | ZSH (Oh-my-zsh)  |
+|  Prompt             | [Ohmyposh](https://ohmyposh.dev)  |
+|  Menu               | Bemenu      |
+|  File Browser       | Yazi        |
+
+
+### Credits
+Insipiration: [Visibobl Swaydots](https://github.com/visibobl/swaydots)
