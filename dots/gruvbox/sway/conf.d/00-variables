@@ -8,7 +8,7 @@ set $right l
 # Apps
 set $term foot
 set $menu  j4-dmenu-desktop --dmenu='bemenu -i -l 10'
-set $screenshot grimshot --notify save area ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png
+set $screenshot grimshot --notify save area $HOME/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png
 set $filemanager foot yazi
 set $clipboard-hist cliphist list | bemenu -i -l 20| cliphist decode | wl-copy
 set $web-browser firefox
