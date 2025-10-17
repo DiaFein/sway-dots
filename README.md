@@ -3,9 +3,9 @@ My Sway Dotfiles
 
 
 ### Screenshots
-![Desktop](https://github.com/pirtur/sway-dots/blob/main/screenshots/2025-10-13_21-34-02.png?raw=true)
-![Terminals](https://github.com/pirtur/sway-dots/blob/main/screenshots/2025-10-13_21-40-29.png)
-![Bemenu]()
+![Desktop](https://github.com/pirtur/sway-dots/blob/main/screenshots/2025-10-16_21-19-09.png)
+![Terminals](https://github.com/pirtur/sway-dots/blob/main/screenshots/2025-10-17_10-56-12.png)
+![Desktop2](https://github.com/pirtur/sway-dots/blob/main/screenshots/2025-10-17_10-56-28.png)
 
 
 ### Details
@@ -14,7 +14,7 @@ My Sway Dotfiles
 |  OS                 | Debian      |
 |  WM                 | Sway        |
 |  Autotiling Script  | [Autotiling](https://github.com/nwg-piotr/autotiling) | 
-|  Bar                | Waybar      |
+|  Status Bar                | Waybar      |
 |  Terminal           | Foot        |
 |  Shell              | ZSH (Oh-my-zsh)  |
 |  Prompt             | [Ohmyposh](https://ohmyposh.dev)  |
