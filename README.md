@@ -10,7 +10,7 @@ My Sway Dotfiles
 ### Details
 | Category            | Application |
 | --------            | ----------- |
-|  OS                 | Debian      |
+|  OS                 | Void Linux     |
 |  WM                 | Sway        |
 |  Autotiling Script  | [Autotiling](https://github.com/nwg-piotr/autotiling) | 
 |  Bar                | Waybar      |
