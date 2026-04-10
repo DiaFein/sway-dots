@@ -1,113 +1,70 @@
 #!/bin/bash
 # =========================================================
-# VOID LINUX GNOME (RUNIT-SAFE) — BULLETPROOF INSTALLER
-# Author: ChatGPT (Optimized for stability)
+# VOID LINUX GNOME (REAL FIX - NO META PKG)
 # =========================================================
 
 set -euo pipefail
 
-# ---------- COLORS ----------
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m'
+echo "[*] Updating system..."
+sudo xbps-install -Syu
 
-log() { echo -e "${BLUE}[*] $1${NC}"; }
-ok()  { echo -e "${GREEN}[✔] $1${NC}"; }
-err() { echo -e "${RED}[✖] $1${NC}"; }
+echo "[*] Installing core services..."
+sudo xbps-install -y elogind dbus
 
-# ---------- ROOT CHECK ----------
-if [ "$EUID" -ne 0 ]; then
-  err "Run as root (sudo ./install-gnome-void.sh)"
-  exit 1
-fi
-
-log "Updating system..."
-xbps-install -Syu
-
-# ---------- CORE SERVICES ----------
-log "Installing core services (elogind, dbus)..."
-xbps-install -y elogind dbus
-
-# Enable services (runit way)
+# Enable runit services
 enable_service() {
-    local svc=$1
-    if [ ! -d "/var/service/$svc" ]; then
-        ln -s "/etc/sv/$svc" "/var/service/"
-        ok "Enabled $svc"
-    else
-        ok "$svc already enabled"
-    fi
+    [ -d "/var/service/$1" ] || sudo ln -s /etc/sv/$1 /var/service/
 }
 
 enable_service elogind
 enable_service dbus
 
-sleep 2
+sudo sv up elogind || true
+sudo sv up dbus || true
 
-# Start services (safe)
-sv up elogind || true
-sv up dbus || true
-
-# ---------- VERIFY SERVICES ----------
-log "Checking service status..."
-sv status elogind || err "elogind not running!"
-sv status dbus || err "dbus not running!"
-
-# ---------- PAM FIX ----------
-log "Ensuring PAM elogind integration..."
-if ! grep -q pam_elogind /etc/pam.d/system-login 2>/dev/null; then
-    echo "session   optional   pam_elogind.so" >> /etc/pam.d/system-login
-    ok "Added pam_elogind"
-else
-    ok "pam_elogind already present"
+# PAM fix
+if ! grep -q pam_elogind /etc/pam.d/system-login; then
+    echo "session optional pam_elogind.so" | sudo tee -a /etc/pam.d/system-login
 fi
 
-# ---------- INSTALL FULL GNOME ----------
-log "Installing full GNOME stack (safe set)..."
+echo "[*] Installing FULL GNOME stack (Void-safe)..."
 
-xbps-install -y \
-    gnome gnome-extra \
-    gnome-session gnome-shell gnome-control-center \
-    gnome-settings-daemon gnome-terminal nautilus \
-    mutter gsettings-desktop-schemas \
-    adwaita-icon-theme gdm xorg
+sudo xbps-install -y \
+    gnome-shell \
+    gnome-session \
+    gnome-settings-daemon \
+    gnome-control-center \
+    gnome-terminal \
+    nautilus \
+    gdm \
+    mutter \
+    gsettings-desktop-schemas \
+    adwaita-icon-theme \
+    network-manager-applet \
+    NetworkManager \
+    dg-user-dirs \
+    xdg-utils \
+    polkit \
+    polkit-gnome
 
-# ---------- CLEAN BROKEN STATES ----------
-log "Cleaning possible broken GNOME cache..."
-rm -rf /var/lib/gdm/.config/dconf 2>/dev/null || true
+echo "[*] Enabling essential services..."
 
-# ---------- ENABLE GDM ----------
-log "Enabling GDM (display manager)..."
+enable_service NetworkManager
 enable_service gdm
-sv up gdm || true
 
-# ---------- XDG RUNTIME FIX ----------
-log "Fixing XDG runtime dir permissions..."
-mkdir -p /run/user/$(id -u)
-chown $(logname):$(logname) /run/user/$(id -u)
-chmod 700 /run/user/$(id -u)
+sudo sv up NetworkManager || true
+sudo sv up gdm || true
 
-# ---------- FINAL CHECK ----------
-log "Running final checks..."
+echo "[*] Cleaning broken configs..."
+sudo rm -rf /var/lib/gdm/.config/dconf 2>/dev/null || true
 
-if ! command -v gnome-session >/dev/null; then
-    err "GNOME install failed!"
-    exit 1
-fi
-
-if ! loginctl >/dev/null 2>&1; then
-    err "elogind not working properly!"
-else
-    ok "elogind working"
-fi
-
-ok "GNOME installation complete!"
+echo "[*] Fixing runtime dir..."
+sudo mkdir -p /run/user/$(id -u)
+sudo chown $(whoami):$(whoami) /run/user/$(id -u)
+sudo chmod 700 /run/user/$(id -u)
 
 echo
-echo "==========================================="
-echo "🚀 REBOOT NOW:"
+echo "=================================="
+echo "✅ DONE — Reboot now"
 echo "sudo reboot"
-echo
-echo "Login via GDM (GUI login screen)"
-echo "==========================================="
+echo "=================================="
